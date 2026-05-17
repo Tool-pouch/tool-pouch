@@ -26,5 +26,19 @@
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
     --shadow-brand: 0 6px 20px oklch(68% 0.16 290 / 0.30);
+
+    /* Dark Modern actual values, expressed in oklch:
+     * keyword #C586C0  string #CE9178  fn #DCDCAA  type #4EC9B0
+     * comment #6A9955  number #B5CEA8  flag #9CDCFE
+     */
+    --syntax-keyword:   oklch(72% 0.13 325);
+    --syntax-string:    oklch(72% 0.10 50);
+    --syntax-comment:   oklch(65% 0.13 145);
+    --syntax-number:    oklch(82% 0.10 145);
+    --syntax-fn:        oklch(86% 0.10 100);
+    --syntax-type:      oklch(78% 0.13 180);
+    --syntax-decorator: oklch(86% 0.10 100);
+    --syntax-flag:      oklch(85% 0.10 230);
+    --syntax-prompt:    oklch(72% 0.13 325);
   }
 }

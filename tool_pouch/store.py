@@ -34,7 +34,7 @@ ALLOWED_KINDS = (KIND_TEST, KIND_PRODUCTION, KIND_REPLAY)
 def default_db_path() -> Path:
     """Resolve the SQLite path: $TOOL_POUCH_DB > ~/.tool_pouch/tool_pouch.db.
 
-    Storing under the user's home means `tool-pouch runs` and `tool-pouch show`
+    Storing under the user's home means `pouch runs` and `pouch show`
     work from any cwd, instead of only from the directory the run started
     in. Tests and CI override via $TOOL_POUCH_DB.
     """

@@ -1,13 +1,13 @@
-"""Production trace capture for OpenAI / Anthropic agents.
+"""Production trace capture for Anthropic / OpenAI agents.
 
-Public surface:
+Public surface (assuming `import tool_pouch as pouch`):
 
-    tool_pouch.wrap_openai(client, ...)
-    tool_pouch.wrap_anthropic(client, ...)
-    tool_pouch.flush(timeout=2.0)
-    tool_pouch.JSONLogger(...)
-    tool_pouch.HTTPSink(...)
-    tool_pouch.LocalStore(...)
+    pouch.wrap_anthropic(client, ...)
+    pouch.wrap_openai(client, ...)
+    pouch.flush(timeout=2.0)
+    pouch.JSONLogger(...)
+    pouch.HTTPSink(...)
+    pouch.LocalStore(...)
 
 Architecture:
 

@@ -20,7 +20,7 @@ def render(run_id, agent_path=None):
     failures = [r for r in results if r["failure_type"] in BAD_TYPES]
 
     if not failures:
-        return f"# tool-pouch run {run_id[:8]}\n\nAll {len(results)} scenarios passed. No fixes needed."
+        return f"# pouch run {run_id[:8]}\n\nAll {len(results)} scenarios passed. No fixes needed."
 
     # Group by source so the AI sees clusters, not a flat list
     by_source = defaultdict(list)
@@ -63,7 +63,7 @@ def render(run_id, agent_path=None):
 
     lines.append("## After fixing")
     lines.append("")
-    lines.append("Re-run `tool-pouch run` to verify the failures are resolved. New failures "
+    lines.append("Re-run `pouch run` to verify the failures are resolved. New failures "
                  "may surface that were previously hidden by earlier crashes.")
     lines.append("")
     return "\n".join(lines)

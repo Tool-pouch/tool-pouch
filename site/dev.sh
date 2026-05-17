@@ -29,11 +29,18 @@ set +a
 OUT=$(mktemp -d)
 trap 'rm -rf "$OUT"' EXIT INT TERM
 
-# Copy site assets into a temp dir; strip dev-only files so they
-# never get served accidentally.
-cp -R . "$OUT/"
-rm -f "$OUT"/.env* "$OUT"/dev.sh "$OUT"/build.sh "$OUT"/vercel.json
+# Symlink every asset directly from site/ into the temp dir so edits
+# to CSS/JS/images show up on refresh without restarting the server.
+# Skip dev-only files (env, scripts), and index.html (handled below).
+for item in * .[!.]*; do
+  case "$item" in
+    .env*|dev.sh|build.sh|vercel.json|index.html|.|..) continue ;;
+    *) [ -e "$item" ] && ln -s "$HERE/$item" "$OUT/$item" ;;
+  esac
+done
 
+# index.html is processed once at startup. Restart dev.sh if you edit
+# it (mostly: when you bump the CSS cache buster).
 sed "s|{{SUPABASE_URL}}|$SUPABASE_URL|g; s|{{SUPABASE_PUBLISHABLE_KEY}}|$SUPABASE_PUBLISHABLE_KEY|g" \
     index.html > "$OUT/index.html"
 

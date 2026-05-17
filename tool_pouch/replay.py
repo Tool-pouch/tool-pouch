@@ -1,6 +1,6 @@
 """Replay captured production traces against scenarios or real flows.
 
-The CLI surface is `tool-pouch replay <trace_id> [--mode ...] [--repeat N]`.
+The CLI surface is `pouch replay <trace_id> [--mode ...] [--repeat N]`.
 This module provides the building blocks that command uses; library
 callers can use them directly to script bespoke replay flows.
 
@@ -71,7 +71,7 @@ def build_replay_inputs(
     Parameters
     ----------
     trace
-        Captured production trace (from `tool_pouch.wrap_*()`). Must contain
+        Captured production trace (from `pouch.wrap_*()`). Must contain
         `user_input`, `tools`, and `tool_calls` at minimum.
     mode
         'frozen' | 'frozen-tools' | 'chaos'.
@@ -299,7 +299,7 @@ def aggregate_verdicts(
     Input: list of {(tool, scenario): verdict} dicts, one per replay.
     Output: {(tool, scenario): {verdict: pct, ...}}.
 
-    Used by the `tool-pouch replay --repeat N` reporter to show "this tool
+    Used by the `pouch replay --repeat N` reporter to show "this tool
     fails 14% of the time on the malformed_json scenario."
     """
     counts: Dict[Tuple[str, str], Dict[str, int]] = {}

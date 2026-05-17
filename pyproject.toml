@@ -43,6 +43,7 @@ Source = "https://github.com/Tool-pouch/tool-pouch"
 Issues = "https://github.com/Tool-pouch/tool-pouch/issues"
 
 [project.scripts]
+pouch = "tool_pouch.cli:main"
 tool-pouch = "tool_pouch.cli:main"
 
 [tool.hatch.build.targets.wheel]

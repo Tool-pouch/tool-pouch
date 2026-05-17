@@ -1,7 +1,7 @@
 """Anthropic Messages API tool-use adapter.
 
 Mirrors the OpenAI adapter so users can swap providers without changing
-the rest of their tool-pouch wiring.
+the rest of their Tool Pouch wiring.
 """
 from __future__ import annotations
 

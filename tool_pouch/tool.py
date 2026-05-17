@@ -1,17 +1,18 @@
-"""Lightweight @tool_pouch.tool decorator + module-level registry.
+"""Lightweight @pouch.tool decorator + module-level registry.
 
-Usage:
+Usage (either pattern works — both end up calling the same decorator):
 
-    from tool_pouch import tool
-
+    from tool_pouch import tool        # short and direct
     @tool
-    def search(q: str) -> dict:
-        '''Search the web for q.'''
-        return ...
+    def search(q: str) -> dict: ...
+
+    import tool_pouch as pouch         # alias style
+    @pouch.tool
+    def search(q: str) -> dict: ...
 
 The decorator is a transparent identity at runtime — your code keeps
 working as before. It only attaches a `__tool_pouch_tool__` marker so
-`tool_pouch.discover()` and the CLI can find it without import-time scanning
+`pouch.discover()` and the CLI can find it without import-time scanning
 of every callable.
 
 Optional metadata:
@@ -20,7 +21,7 @@ Optional metadata:
     def search(...): ...
 
 Future: the same decorator is the hook for the paid wrapper that ships
-prod traces to tool-pouch cloud (`__tool_pouch_tool__["project"]`, etc.).
+prod traces to Tool Pouch Cloud (`__tool_pouch_tool__["project"]`, etc.).
 """
 from __future__ import annotations
 
@@ -37,11 +38,11 @@ def tool(
     description: Optional[str] = None,
     tags: Optional[List[str]] = None,
 ) -> Callable[..., Any]:
-    """Mark a function as a tool-pouch tool. Works as `@tool` or `@tool(...)`."""
+    """Mark a function as a Tool Pouch tool. Works as `@tool` or `@tool(...)`."""
 
     def _wrap(f: Callable[..., Any]) -> Callable[..., Any]:
         if not callable(f):
-            raise TypeError("@tool_pouch.tool only decorates callables")
+            raise TypeError("@pouch.tool only decorates callables")
         f.__tool_pouch_tool__ = {  # type: ignore[attr-defined]
             "description": description,
             "tags": list(tags) if tags else [],

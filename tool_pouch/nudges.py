@@ -1,7 +1,7 @@
 """One-time nudges shown in the CLI.
 
 Used to surface upgrade hooks (e.g. "your local store has 5,000 traces —
-try `tool-pouch sync` to push them to the cloud") without hammering the user
+try `pouch sync` to push them to the cloud") without hammering the user
 on every command.
 
 State is persisted in ~/.tool_pouch/nudges.json:

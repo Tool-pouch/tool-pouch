@@ -54,7 +54,7 @@ def test_traces_empty_store_prints_helper(db_path, capsys):
     assert exc.value.code == 0
     out = capsys.readouterr().out
     assert "No production traces found" in out
-    assert "wrap_openai" in out
+    assert "wrap_anthropic" in out
 
 
 def test_traces_lists_captured_runs(db_path, capsys):

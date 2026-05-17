@@ -24,7 +24,7 @@ def _raise(exc):
     raise exc
 
 
-# Highest-signal scenarios for `tool-pouch scan --quick` — covers the most
+# Highest-signal scenarios for `pouch scan --quick` — covers the most
 # common silent-failure modes in well under a minute.
 QUICK_SCENARIOS = ["null_response", "empty_response", "server_error",
                    "malformed_json"]

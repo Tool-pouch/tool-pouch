@@ -8,21 +8,21 @@ Stacks already on Path A (decorator) or Path D (production wrap) get
 this for free, no agent file required.
 
 Find a captured incident, then replay it:
-    tool-pouch traces --since 24h --failed
-    tool-pouch trace abc12345
+    pouch traces --since 24h --failed
+    pouch trace abc12345
 
     # Walk through what actually happened. No API calls.
-    tool-pouch replay abc12345 --frozen --agent-file examples/03_incident_replay.py
+    pouch replay abc12345 --frozen --agent-file examples/03_incident_replay.py
 
     # Re-call your model; stub tools with captured outputs.
-    tool-pouch replay abc12345 --frozen-tools --agent-file examples/03_incident_replay.py
+    pouch replay abc12345 --frozen-tools --agent-file examples/03_incident_replay.py
 
     # Default: full chaos. Real model, real tools, injected scenarios.
-    tool-pouch replay abc12345 --agent-file examples/03_incident_replay.py
+    pouch replay abc12345 --agent-file examples/03_incident_replay.py
 
     # 100 chaos replays produce a percentage verdict per scenario,
     # answering "would this incident reproduce?" with a number.
-    tool-pouch replay abc12345 --repeat 100 --agent-file examples/03_incident_replay.py
+    pouch replay abc12345 --repeat 100 --agent-file examples/03_incident_replay.py
 
 The `--agent-file` flag can be omitted by setting `agent` in
 `.tool_pouch.toml` at the repo root.

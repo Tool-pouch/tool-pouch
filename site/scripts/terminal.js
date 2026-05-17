@@ -2,8 +2,8 @@
  *
  * Cycles through three frames showing the canonical Tool Pouch flow:
  *   1. wrap_anthropic capture
- *   2. tool-pouch traces
- *   3. tool-pouch replay --repeat 100
+ *   2. pouch traces
+ *   3. pouch replay --repeat 100
  *
  * Pause on hover. Reduced motion respected. Total payload < 1KB gzipped.
  */
@@ -17,12 +17,12 @@
     [
       { c: "prompt", t: "$ " },
       { c: "",       t: "python app.py\n" },
-      { c: "out",    t: "[tool-pouch] capturing every messages.create → ~/.tool_pouch/tool_pouch.db\n" },
+      { c: "out",    t: "[pouch] capturing every messages.create → ~/.tool_pouch/tool_pouch.db\n" },
       { c: "out",    t: "Listening on :8000\n" },
     ],
     [
       { c: "prompt", t: "$ " },
-      { c: "",       t: "tool-pouch traces --since 1h --failed\n" },
+      { c: "",       t: "pouch traces --since 1h --failed\n" },
       { c: "out",    t: "TRACE      WHEN     AGENT          OUTCOME    REQUEST_ID\n" },
       { c: "bad",    t: "f3a91c7d   2m ago   support_bot    crashed    req-7c2a9\n" },
       { c: "bad",    t: "9b41208e   14m ago  support_bot    looped     req-44a01\n" },
@@ -30,7 +30,7 @@
     ],
     [
       { c: "prompt", t: "$ " },
-      { c: "",       t: "tool-pouch replay f3a91c7d --repeat 100\n" },
+      { c: "",       t: "pouch replay f3a91c7d --repeat 100\n" },
       { c: "out",    t: "Replaying f3a91c7d in chaos mode × 100...\n" },
       { c: "out",    t: "\nFailure rates across replays:\n\n" },
       { c: "bad",    t: "  search   × timeout         87% crashed, 13% handled\n" },

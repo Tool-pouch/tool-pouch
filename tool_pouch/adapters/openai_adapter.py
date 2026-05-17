@@ -35,7 +35,7 @@ def test_openai(
     """Stress-test an OpenAI chat-completions agent. Returns a list of run_ids.
 
     Pass plain Python functions in `tools` — schemas are derived from
-    signature + docstring. To override, pass `tool_pouch.tool` objects directly.
+    signature + docstring. To override, pass `pouch.tool` objects directly.
     """
     from tool_pouch import stress_test
 

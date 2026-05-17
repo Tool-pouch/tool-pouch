@@ -53,6 +53,23 @@
   --color-success:      oklch(60% 0.16 145);
   --color-danger:       oklch(60% 0.20 28);
 
+  /* Syntax — mirrors VS Code "Dark Modern" categories. Lightness tuned
+   * for AA contrast on the parchment / raised background.
+   * keyword/prompt: magenta-purple   string:    warm orange
+   * fn/decorator:   gold             comment:   green (italic)
+   * type:           teal             number:    green
+   * flag:           blue
+   */
+  --syntax-keyword:     oklch(45% 0.20 325);
+  --syntax-string:      oklch(46% 0.15 35);
+  --syntax-comment:     oklch(48% 0.12 145);
+  --syntax-number:      oklch(45% 0.14 145);
+  --syntax-fn:          oklch(48% 0.12 75);
+  --syntax-type:        oklch(48% 0.10 195);
+  --syntax-decorator:   oklch(48% 0.12 75);
+  --syntax-flag:        oklch(48% 0.14 230);
+  --syntax-prompt:      oklch(45% 0.20 325);
+
   /* Type */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
                Roboto, Helvetica, Arial, sans-serif;

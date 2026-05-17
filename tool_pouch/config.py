@@ -101,7 +101,7 @@ def _interactive_setup():
     print("tool-pouch: first-run setup")
     print("─" * 60)
     print()
-    print("tool-pouch uses an LLM to classify failures (hallucination,")
+    print("Tool Pouch uses an LLM to classify failures (hallucination,")
     print("silent_wrong, etc.) and suggest fixes. Pick a provider:")
     print()
     print("  [1] Anthropic   (recommended; needs ANTHROPIC_API_KEY)")

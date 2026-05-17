@@ -13,7 +13,7 @@ A Redactor is callable:
 It walks dicts, lists, tuples, and strings. Anything else is passed
 through unchanged (numbers, bools, None, custom objects).
 
-Two redact-time modes are exposed by `tool_pouch.wrap_*()`:
+Two redact-time modes are exposed by `pouch.wrap_*()`:
 
     redact_at='capture'  (default, safe)  scrub on the request thread
                                           before the trace ever queues
@@ -112,13 +112,13 @@ def builtin(
     raw strings are compiled with no flags (use inline `(?i)` for case
     insensitivity).
 
-    Example:
+    Example (assuming `import tool_pouch as pouch`):
 
-        my_redactor = tool_pouch.redact.builtin(extra_patterns=[
+        my_redactor = pouch.redact.builtin(extra_patterns=[
             r"acct_\\d{6}",
             r"customer_token=[A-Za-z0-9]+",
         ])
-        client = tool_pouch.wrap_openai(client, redact=my_redactor)
+        client = pouch.wrap_anthropic(client, redact=my_redactor)
     """
     compiled: List[Pattern[str]] = list(_BUILTIN_PATTERNS)
     if extra_patterns:

@@ -3,8 +3,8 @@
 **Stress-test agents. Capture production. Replay incidents on demand.**
 
 Tool Pouch is the reliability layer for AI agents. It catches silent failures
-pre-deploy with `tool-pouch scan`, captures every production request with
-`tool_pouch.wrap_anthropic`, and replays any captured trace under chaos so you
+pre-deploy with `pouch scan`, captures every production request with
+`pouch.wrap_anthropic`, and replays any captured trace under chaos so you
 can answer **"would this incident reproduce?"** in one command — before
 you ship a fix.
 
@@ -13,22 +13,25 @@ pip install tool-pouch
 ```
 
 ```python
-import tool_pouch
+import tool_pouch as pouch
 from anthropic import Anthropic
 
 # Wrap once. Every messages.create from here on is captured.
-client = tool_pouch.wrap_anthropic(Anthropic())
+client = pouch.wrap_anthropic(Anthropic())
 ```
 
 ```bash
 # Pre-deploy
-tool-pouch init && tool-pouch scan --quick
+pouch init && pouch scan --quick
 
 # In production, after the wrap()
-tool-pouch traces --since 1h --failed       # what's blowing up?
-tool-pouch trace --request-id req-abc       # one specific request
-tool-pouch replay <trace_id> --repeat 100   # would it reproduce?
+pouch traces --since 1h --failed       # what's blowing up?
+pouch trace --request-id req-abc       # one specific request
+pouch replay <trace_id> --repeat 100   # would it reproduce?
 ```
+
+> Installed as `pip install tool-pouch`, imported as `import tool_pouch as pouch`,
+> and run as `pouch` (the long form `tool-pouch` also works).
 
 ---
 
@@ -38,9 +41,9 @@ Three problems, one toolkit:
 
 | Layer | Command | What it answers |
 |---|---|---|
-| **Pre-deploy** | `tool-pouch scan` | "What does my agent do when its tools break?" |
-| **Production** | `tool_pouch.wrap_anthropic` | "What did my agent actually receive and emit?" |
-| **Incident response** | `tool-pouch replay` | "Would this 3am incident reproduce?" |
+| **Pre-deploy** | `pouch scan` | "What does my agent do when its tools break?" |
+| **Production** | `pouch.wrap_anthropic` | "What did my agent actually receive and emit?" |
+| **Incident response** | `pouch replay` | "Would this 3am incident reproduce?" |
 
 You can adopt any one independently. They share the same data model
 (local SQLite by default; pluggable destinations for production), so
@@ -67,7 +70,7 @@ pip install tool-pouch[ollama]   # Local Ollama
 
 Tool Pouch uses an LLM to classify failures (hallucinated vs handled,
 silent_wrong, etc.) and suggest fixes. **One API key is enough** —
-`tool-pouch init` autodetects which one you have, and `tool-pouch scan` mirrors
+`pouch init` autodetects which one you have, and `pouch scan` mirrors
 the agent provider to the judge by default.
 
 ```bash
@@ -79,8 +82,8 @@ export ANTHROPIC_API_KEY=...     # → provider = anthropic, judge = anthropic
 Override the judge for a single run:
 
 ```bash
-tool-pouch scan --judge ollama        # local, fully offline
-tool-pouch run my_agent.py --judge openai
+pouch scan --judge ollama        # local, fully offline
+pouch run my_agent.py --judge openai
 ```
 
 If the judge can't reach the LLM (no network, model down), Tool Pouch still
@@ -98,9 +101,9 @@ matches your existing setup.
 
 | Use this if... | Path | Jump to |
 |---|---|---|
-| Tools are plain `.py` functions you control | **A. Decorator** | [`@tool_pouch.tool` + `tool-pouch scan`](#path-a--decorator-the-simplest) |
+| Tools are plain `.py` functions you control | **A. Decorator** | [`@pouch.tool` + `pouch scan`](#path-a--decorator-the-simplest) |
 | You already use Anthropic / OpenAI tool calling | **B. Adapter** | [`test_anthropic` / `test_openai`](#path-b--anthropic--openai-adapter) |
-| LangGraph, MCP, or your own loop | **C. Custom orchestration** | [`agent_fn` + `tool-pouch run`](#path-c--custom-orchestration) |
+| LangGraph, MCP, or your own loop | **C. Custom orchestration** | [`agent_fn` + `pouch run`](#path-c--custom-orchestration) |
 | You want production capture + replay | **D. wrap()** | [`wrap_anthropic` / `wrap_openai`](#path-d--production-wrap--replay) |
 
 What success looks like in any of them: see [What the output looks like](#what-the-output-looks-like).
@@ -112,8 +115,8 @@ What success looks like in any of them: see [What the output looks like](#what-t
 > ~5 min. Use this when tools are plain Python functions in your own files.
 
 ```bash
-tool-pouch init             # autodetects tools/, provider, model
-tool-pouch scan --quick     # ~15s; runs the highest-signal scenarios first
+pouch init             # autodetects tools/, provider, model
+pouch scan --quick     # ~15s; runs the highest-signal scenarios first
 ```
 
 Tag the functions you want tested:
@@ -133,7 +136,7 @@ def fetch(url: str) -> dict:
     return requests.get(url).json()
 ```
 
-`tool-pouch init` finds your tools folder, picks the right provider based on
+`pouch init` finds your tools folder, picks the right provider based on
 your API key, and writes `.tool_pouch.toml`. The judge defaults to the same
 provider as the agent — one API key is enough.
 
@@ -152,14 +155,14 @@ Schemas are derived from each function's signature and docstring — no
 separate spec file, no rewrite.
 
 ```python
-import tool_pouch
+import tool_pouch as pouch
 from anthropic import Anthropic
 
 def search(q: str) -> dict:
     """Search the web for q."""
     return {"results": [...]}
 
-tool_pouch.test_anthropic(
+pouch.test_anthropic(
     client=Anthropic(),
     model="claude-opus-4-7",
     tools=[search],
@@ -172,7 +175,7 @@ OpenAI is identical:
 ```python
 from openai import OpenAI
 
-tool_pouch.test_openai(
+pouch.test_openai(
     client=OpenAI(),
     model="gpt-4o",
     tools=[search],
@@ -213,7 +216,7 @@ test_inputs = ["best pizza in NYC"]    # what to ask your agent
 Run it:
 
 ```bash
-tool-pouch run my_agent.py
+pouch run my_agent.py
 ```
 
 ---
@@ -226,17 +229,17 @@ tool-pouch run my_agent.py
 One line wraps your client:
 
 ```python
-import tool_pouch
+import tool_pouch as pouch
 from anthropic import Anthropic
 
-client = tool_pouch.wrap_anthropic(Anthropic(), agent_name="support_bot")
+client = pouch.wrap_anthropic(Anthropic(), agent_name="support_bot")
 # That's it. Use client.messages.create exactly as before.
 ```
 
 OpenAI is identical:
 
 ```python
-client = tool_pouch.wrap_openai(OpenAI(), agent_name="support_bot")
+client = pouch.wrap_openai(OpenAI(), agent_name="support_bot")
 ```
 
 Async clients work too (`AsyncAnthropic`, `AsyncOpenAI`). Streaming is
@@ -246,17 +249,17 @@ committed when the stream exhausts.
 ### Querying captured traces
 
 ```bash
-tool-pouch traces                            # everything captured
-tool-pouch traces --since 1h --failed        # last hour, failures only
-tool-pouch traces --request-id req-abc       # by your request_id
-tool-pouch trace <trace_id>                  # full detail of one capture
+pouch traces                            # everything captured
+pouch traces --since 1h --failed        # last hour, failures only
+pouch traces --request-id req-abc       # by your request_id
+pouch trace <trace_id>                  # full detail of one capture
 ```
 
 `request_id` flows through to traces — pass a string or a callable that
 extracts it from the request kwargs:
 
 ```python
-client = tool_pouch.wrap_anthropic(
+client = pouch.wrap_anthropic(
     Anthropic(),
     request_id=lambda **kw: kw.get("metadata", {}).get("user_id", "anon"),
 )
@@ -266,16 +269,16 @@ client = tool_pouch.wrap_anthropic(
 
 ```bash
 # Walk through what actually happened — no API calls.
-tool-pouch replay <trace_id> --frozen
+pouch replay <trace_id> --frozen
 
 # Re-call your model; stub tools with captured outputs.
-tool-pouch replay <trace_id> --frozen-tools
+pouch replay <trace_id> --frozen-tools
 
 # Default: chaos. Real model, real tools, injected scenarios.
-tool-pouch replay <trace_id>
+pouch replay <trace_id>
 
 # 100 chaos replays → "would this incident reproduce?"
-tool-pouch replay <trace_id> --repeat 100
+pouch replay <trace_id> --repeat 100
 ```
 
 For chaos / frozen-tools modes, Tool Pouch needs your `agent_fn` and (for
@@ -291,15 +294,15 @@ The default redactor scrubs emails, phones, SSNs, credit cards, IPs,
 and common API keys at capture time:
 
 ```python
-client = tool_pouch.wrap_anthropic(Anthropic())   # built-in redaction enabled
+client = pouch.wrap_anthropic(Anthropic())   # built-in redaction enabled
 ```
 
 Extend the regex pack:
 
 ```python
-client = tool_pouch.wrap_anthropic(
+client = pouch.wrap_anthropic(
     Anthropic(),
-    redact=tool_pouch.redact.builtin(extra_patterns=[
+    redact=pouch.redact.builtin(extra_patterns=[
         r"acct_\d{6}",
         r"customer_token=[A-Za-z0-9]+",
     ]),
@@ -309,7 +312,7 @@ client = tool_pouch.wrap_anthropic(
 Disable redaction explicitly (if you're handling PII upstream):
 
 ```python
-client = tool_pouch.wrap_anthropic(Anthropic(), redact=None)
+client = pouch.wrap_anthropic(Anthropic(), redact=None)
 ```
 
 ### Destinations
@@ -318,12 +321,12 @@ Three destinations ship in OSS. Combine them — capture once, pipe
 anywhere:
 
 ```python
-client = tool_pouch.wrap_anthropic(
+client = pouch.wrap_anthropic(
     Anthropic(),
     destinations=[
-        tool_pouch.LocalStore(),                       # SQLite, dev/staging
-        tool_pouch.JSONLogger(),                       # NDJSON to stderr
-        tool_pouch.HTTPSink(url="https://your.api/traces"),
+        pouch.LocalStore(),                       # SQLite, dev/staging
+        pouch.JSONLogger(),                       # NDJSON to stderr
+        pouch.HTTPSink(url="https://your.api/traces"),
     ],
 )
 ```
@@ -368,7 +371,7 @@ Breakdown:
   ❌ looped: 2
   ✓ handled: 10
 
-For full trace of any failure: tool-pouch show abc12345 --filter <type>
+For full trace of any failure: pouch show abc12345 --filter <type>
 ```
 
 Exit code is `0` when all scenarios pass and `1` when any fail — works
@@ -379,10 +382,10 @@ in CI out of the box.
 ## Drilling in & re-running
 
 ```bash
-tool-pouch show abc12345 --filter hallucinated      # full trace of one type
-tool-pouch scan --scenarios timeout,malformed_json  # re-run a slice
-tool-pouch run my_agent.py --tools search           # one tool only
-tool-pouch runs --failed                            # history, failures only
+pouch show abc12345 --filter hallucinated      # full trace of one type
+pouch scan --scenarios timeout,malformed_json  # re-run a slice
+pouch run my_agent.py --tools search           # one tool only
+pouch runs --failed                            # history, failures only
 ```
 
 ---
@@ -391,13 +394,13 @@ tool-pouch runs --failed                            # history, failures only
 
 ```toml
 [tool-pouch]
-# For `tool-pouch scan`
+# For `pouch scan`
 tools = "./my_app/tools/"
 provider = "openai"
 model = "gpt-4o"
 test_inputs = ["best pizza in NYC"]   # optional — autogenerated otherwise
 
-# For `tool-pouch run` and `tool-pouch replay`
+# For `pouch run` and `pouch replay`
 agent = "./my_agent.py"
 
 # Common
@@ -413,7 +416,7 @@ After any run, get a markdown prompt designed for Cursor, Claude Code,
 Cline, Windsurf, or Aider:
 
 ```bash
-tool-pouch fix-prompt | pbcopy             # latest run → clipboard
+pouch fix-prompt | pbcopy             # latest run → clipboard
 ```
 
 The format groups failures by source (control flow, prompt, integration)
@@ -425,9 +428,9 @@ so your AI editor proposes clustered fixes instead of one-line patches.
 
 User-facing surface:
 
-- `tool.py` — `@tool_pouch.tool` decorator + module-level registry
-- `discover.py` — walks a path, returns every `@tool_pouch.tool` callable
-- `init.py` — `tool-pouch init`, autodetects tools/provider/model
+- `tool.py` — `@pouch.tool` decorator + module-level registry
+- `discover.py` — walks a path, returns every `@pouch.tool` callable
+- `init.py` — `pouch init`, autodetects tools/provider/model
 - `autogen.py` — generates test prompts from tool docstrings
 - `adapters/` — drop-in helpers for OpenAI and Anthropic tool calling
 - `_introspect.py` — Python callables → JSON tool schemas

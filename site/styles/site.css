@@ -7,8 +7,8 @@
  * - Generous whitespace that signals confidence rather than emptiness
  */
 
-@import "./tokens.css";
-@import "./dark.css";
+@import "./tokens.css?v=3";
+@import "./dark.css?v=3";
 
 * {
   box-sizing: border-box;
@@ -16,11 +16,12 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   margin: 0;
+  overflow-x: clip;
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: var(--lh-normal);
@@ -170,22 +171,29 @@ h1, h2, h3, h4 {
     left: 0;
     right: 0;
     flex-direction: column;
+    align-items: stretch;
     gap: 0;
     background: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
-    padding: var(--sp-4) var(--sp-6);
+    padding: var(--sp-2) 0;
     box-shadow: var(--shadow-md);
   }
   .site-nav.open { display: flex; }
   .site-nav a {
-    padding: var(--sp-3) 0;
+    display: block;
+    padding: var(--sp-4) var(--sp-6);
     border-bottom: 1px solid var(--color-border);
     font-size: var(--fs-base);
+    text-align: left;
+    color: var(--color-fg);
   }
-  .site-nav a:last-child { border-bottom: none; }
+  .site-nav a:last-of-type { border-bottom: none; }
   .site-nav .btn-secondary {
-    margin-top: var(--sp-3);
+    margin: var(--sp-4) var(--sp-6);
+    padding: var(--sp-2) var(--sp-4);
+    border: 1px solid var(--color-border-strong);
     justify-content: center;
+    text-align: center;
   }
   .site-header .container { position: relative; }
   .container { padding: 0 var(--sp-4); }
@@ -309,7 +317,7 @@ p { margin: 0 0 var(--sp-4); color: var(--color-fg-muted); }
   line-height: var(--lh-normal);
   white-space: pre;
   overflow-x: auto;
-  min-height: 14rem;
+  min-height: 16rem;
   color: var(--color-fg);
 }
 .terminal-body .prompt { color: var(--color-accent); }
@@ -333,6 +341,7 @@ p { margin: 0 0 var(--sp-4); color: var(--color-fg-muted); }
   border: 1px solid var(--color-border);
   border-radius: var(--r-lg);
   padding: var(--sp-6);
+  min-width: 0;
   transition: transform var(--dur-norm) var(--ease),
               border-color var(--dur-norm) var(--ease);
 }
@@ -342,6 +351,26 @@ p { margin: 0 0 var(--sp-4); color: var(--color-fg-muted); }
 }
 .card h3 { margin-bottom: var(--sp-2); }
 .card p:last-child { margin-bottom: 0; }
+.card pre {
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-xs);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: var(--sp-4) 0 0;
+}
+
+/* Syntax highlighting (applied by scripts/syntax.js).
+ * Categories and color assignments mirror VS Code "Dark Modern".
+ */
+.tk-keyword   { color: var(--syntax-keyword); }
+.tk-string    { color: var(--syntax-string); }
+.tk-comment   { color: var(--syntax-comment);   font-style: italic; }
+.tk-number    { color: var(--syntax-number); }
+.tk-fn        { color: var(--syntax-fn); }
+.tk-type      { color: var(--syntax-type); }
+.tk-decorator { color: var(--syntax-decorator); }
+.tk-flag      { color: var(--syntax-flag); }
+.tk-prompt    { color: var(--syntax-prompt);    user-select: none; }
 
 .icon {
   width: 32px; height: 32px;

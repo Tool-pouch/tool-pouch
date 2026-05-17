@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Tool Pouch: Stress-test agents. Capture production. Replay incidents.</title>
-<meta name="description" content="Open-source library for AI agent reliability. Stress-test pre-deploy with `tool-pouch scan`, capture every production request with `tool_pouch.wrap_anthropic`, then replay incidents on demand under chaos. Built-in PII redaction, sub-millisecond capture overhead, runs entirely on your machine." />
+<meta name="description" content="Open-source library for AI agent reliability. Stress-test pre-deploy with `pouch scan`, capture every production request with `pouch.wrap_anthropic`, then replay incidents on demand under chaos. Built-in PII redaction, sub-millisecond capture overhead, runs entirely on your machine." />
 <meta name="author" content="Tool Pouch" />
 <meta name="keywords" content="AI agent reliability, agent observability, LLM trace replay, agent incident response, Anthropic tool use, OpenAI tool calling, MCP testing, agent stress testing, LLM PII redaction, production agent monitoring" />
 <link rel="canonical" href="https://toolpouch.dev/" />
@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="/styles/site.css?v=9" />
+<link rel="stylesheet" href="/styles/site.css?v=17" />
 
 <script type="application/ld+json">
 {
@@ -76,7 +76,7 @@
       "name": "What does Tool Pouch do?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Tool Pouch is the agent-reliability layer. (1) Pre-deploy: `tool-pouch scan` injects 12+ tool failures into your agent and reports the silent hallucinations. (2) Production: `tool_pouch.wrap_anthropic(client)` captures every messages.create request to your local store or any log destination, with sub-millisecond overhead and built-in PII redaction. (3) Incident response: `tool-pouch replay <trace_id>` re-runs any captured trace under chaos so you can answer 'would this reproduce?' before you ship a fix."
+        "text": "Tool Pouch is the agent-reliability layer. (1) Pre-deploy: `pouch scan` injects 12+ tool failures into your agent and reports the silent hallucinations. (2) Production: `pouch.wrap_anthropic(client)` captures every messages.create request to your local store or any log destination, with sub-millisecond overhead and built-in PII redaction. (3) Incident response: `pouch replay <trace_id>` re-runs any captured trace under chaos so you can answer 'would this reproduce?' before you ship a fix."
       }
     },
     {
@@ -92,7 +92,7 @@
       "name": "What does the production wrap actually capture?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "For each call to messages.create or chat.completions.create, Tool Pouch captures the request (model, messages, tools, system prompt), the assistant response (text + tool calls), the duration, and any error. Streaming responses are accumulated and committed on stream exhaustion. PII is redacted at capture time by default; `redact=None` opts out, `redact=tool_pouch.redact.builtin(extra_patterns=[...])` extends the built-in pack."
+        "text": "For each call to messages.create or chat.completions.create, Tool Pouch captures the request (model, messages, tools, system prompt), the assistant response (text + tool calls), the duration, and any error. Streaming responses are accumulated and committed on stream exhaustion. PII is redacted at capture time by default; `redact=None` opts out, `redact=pouch.redact.builtin(extra_patterns=[...])` extends the built-in pack."
       }
     },
     {
@@ -116,7 +116,7 @@
       "name": "What replay modes are available?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "(1) `--frozen`: deterministic walk-through, no model or tool calls. Used to review what happened. (2) `--frozen-tools`: re-call your model against the captured input, but stub tool calls with their captured outputs. Strict by default; pair with `--loose-tools` (match by name only) or `--match-closest` (nearest-neighbor by args) for noisier matches. (3) Default chaos mode: re-call everything against your real model and tools, then inject the same scenarios as `tool-pouch scan` and report verdict. Pair with `--repeat 100` for failure-rate aggregation."
+        "text": "(1) `--frozen`: deterministic walk-through, no model or tool calls. Used to review what happened. (2) `--frozen-tools`: re-call your model against the captured input, but stub tool calls with their captured outputs. Strict by default; pair with `--loose-tools` (match by name only) or `--match-closest` (nearest-neighbor by args) for noisier matches. (3) Default chaos mode: re-call everything against your real model and tools, then inject the same scenarios as `pouch scan` and report verdict. Pair with `--repeat 100` for failure-rate aggregation."
       }
     },
     {
@@ -124,7 +124,7 @@
       "name": "How do I install and integrate?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "`pip install tool-pouch`, then `tool-pouch init && tool-pouch scan --quick` for a 15-second pre-deploy stress test. To enable production capture: `client = tool_pouch.wrap_anthropic(Anthropic())` (or `wrap_openai`). One line. Every subsequent call is captured. The judge defaults to your agent's provider, so one API key is enough."
+        "text": "`pip install tool-pouch`, then `pouch init && pouch scan --quick` for a 15-second pre-deploy stress test. To enable production capture: `client = pouch.wrap_anthropic(Anthropic())` (or `wrap_openai`). One line. Every subsequent call is captured. The judge defaults to your agent's provider, so one API key is enough."
       }
     }
   ]
@@ -161,8 +161,8 @@
     <h1>Stress-test agents. Capture production.<br>Replay incidents on demand.</h1>
     <p class="lede">
       Tool Pouch is the reliability layer for AI agents. Catch silent failures
-      pre-deploy with <code>tool-pouch scan</code>. Capture every production
-      request with <code>tool_pouch.wrap_anthropic</code>. Replay any incident
+      pre-deploy with <code>pouch scan</code>. Capture every production
+      request with <code>pouch.wrap_anthropic</code>. Replay any incident
       on demand under chaos so you know whether it reproduces, before
       you ship a fix.
     </p>
@@ -230,39 +230,39 @@
         <div class="icon">01</div>
         <h3>Pre-deploy</h3>
         <p>
-          <code>tool-pouch scan</code> injects 12+ tool failures
+          <code>pouch scan</code> injects 12+ tool failures
           (timeouts, malformed JSON, rate limits, prompt injection,
           unicode chaos) and reports the silent hallucinations.
-          Auto-discovers <code>@tool_pouch.tool</code> functions, generates
+          Auto-discovers <code>@pouch.tool</code> functions, generates
           test inputs from your docstrings.
         </p>
-        <pre><code>tool-pouch init &amp;&amp; tool-pouch scan --quick</code></pre>
+        <pre><code>pouch init &amp;&amp; pouch scan --quick</code></pre>
       </article>
 
       <article class="card">
         <div class="icon">02</div>
         <h3>Production</h3>
         <p>
-          <code>tool_pouch.wrap_anthropic(client)</code> intercepts every
+          <code>pouch.wrap_anthropic(client)</code> intercepts every
           <code>messages.create</code> call. Captures input,
           output, tool calls, latency. Sub-millisecond overhead.
           PII-redacted at capture. Pipes to your existing log
           aggregator out of the box.
         </p>
-        <pre><code>client = tool_pouch.wrap_anthropic(Anthropic())</code></pre>
+        <pre><code>client = pouch.wrap_anthropic(Anthropic())</code></pre>
       </article>
 
       <article class="card">
         <div class="icon">03</div>
         <h3>Incident response</h3>
         <p>
-          <code>tool-pouch replay &lt;trace_id&gt;</code> re-runs a captured
+          <code>pouch replay &lt;trace_id&gt;</code> re-runs a captured
           trace under chaos. Pair with <code>--repeat 100</code> to
           surface flaky failure rates. Use <code>--frozen</code> for a
           deterministic walk-through, <code>--frozen-tools</code> to
           isolate model behavior.
         </p>
-        <pre><code>tool-pouch replay abc12345 --repeat 100</code></pre>
+        <pre><code>pouch replay abc12345 --repeat 100</code></pre>
       </article>
     </div>
   </div>
@@ -292,17 +292,17 @@
         </p>
       </div>
       <div>
-        <pre><code>import tool_pouch
+        <pre><code>import tool_pouch as pouch
 from anthropic import Anthropic
 
-client = tool_pouch.wrap_anthropic(
+client = pouch.wrap_anthropic(
     Anthropic(),
     agent_name="support_bot",
     request_id=lambda **kw: kw.get("metadata", {}).get("user_id"),
-    redact=tool_pouch.redact.builtin(extra_patterns=[
+    redact=pouch.redact.builtin(extra_patterns=[
         r"acct_\d{6}",
     ]),
-    destinations=[tool_pouch.JSONLogger()],
+    destinations=[pouch.JSONLogger()],
 )
 
 # Use it exactly like before.
@@ -317,16 +317,16 @@ client.messages.create(...)</code></pre>
     <div class="feature-row reverse">
       <div>
         <pre><code># Walk through what actually happened. No API calls.
-tool-pouch replay abc12345 --frozen
+pouch replay abc12345 --frozen
 
 # Re-call your model; stub tools with captured outputs.
-tool-pouch replay abc12345 --frozen-tools
+pouch replay abc12345 --frozen-tools
 
 # Default: full chaos. Real model, real tools, injected scenarios.
-tool-pouch replay abc12345
+pouch replay abc12345
 
 # 100 chaos replays → "this fails 78% of the time on timeouts."
-tool-pouch replay abc12345 --repeat 100</code></pre>
+pouch replay abc12345 --repeat 100</code></pre>
       </div>
       <div>
         <span class="eyebrow">Replay</span>
@@ -450,7 +450,7 @@ tool-pouch replay abc12345 --repeat 100</code></pre>
     <details class="faq-item">
       <summary>How does PII redaction work?</summary>
       <div>
-        <code>tool_pouch.redact.builtin()</code> ships with regex for
+        <code>pouch.redact.builtin()</code> ships with regex for
         emails, phones, SSNs, credit cards, IPs, Anthropic/OpenAI
         keys, AWS/GitHub tokens, and bearer tokens. Pass
         <code>extra_patterns=[r"acct_\d{6}"]</code> to extend, or pass
@@ -480,7 +480,7 @@ tool-pouch replay abc12345 --repeat 100</code></pre>
     <details class="faq-item">
       <summary>What about MCP, LangGraph, or my custom orchestrator?</summary>
       <div>
-        For pre-deploy testing, <code>tool-pouch run</code> takes any
+        For pre-deploy testing, <code>pouch run</code> takes any
         agent that exposes <code>agent_fn</code> + <code>real_tool_fn</code>
         + <code>tools</code> + <code>test_inputs</code>. For
         production capture, point your underlying Anthropic/OpenAI
@@ -505,6 +505,7 @@ tool-pouch replay abc12345 --repeat 100</code></pre>
 </footer>
 
 <script src="/scripts/terminal.js" defer></script>
+<script src="/scripts/syntax.js?v=2" defer></script>
 <script>
 (function () {
   var SUPABASE_URL = '{{SUPABASE_URL}}';

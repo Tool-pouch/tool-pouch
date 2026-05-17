@@ -2,7 +2,7 @@
 
 Reuses the same provider plumbing as the LLM judge so users don't
 configure twice. If the LLM is unreachable, falls back to a generic
-prompt so `tool-pouch scan` still produces a result.
+prompt so `pouch scan` still produces a result.
 """
 from __future__ import annotations
 

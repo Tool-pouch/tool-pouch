@@ -30,7 +30,7 @@ def list_runs(limit=20, failed_only=False):
         if failed_only:
             print("No failed runs found.")
         else:
-            print("No runs yet. Run `tool-pouch run` to get started.")
+            print("No runs yet. Run `pouch run` to get started.")
         return
 
     print()
@@ -56,8 +56,8 @@ def list_runs(limit=20, failed_only=False):
         print(f"  {rid:<10}  {when:<14}  {agent:<22}  {result}")
 
     print()
-    print(c.dim(f"Drill into a run:  tool-pouch show <run_id>"))
-    print(c.dim(f"Get an AI fix:     tool-pouch fix-prompt <run_id>"))
+    print(c.dim(f"Drill into a run:  pouch show <run_id>"))
+    print(c.dim(f"Get an AI fix:     pouch fix-prompt <run_id>"))
 
 
 def _last_assistant_text(trace: dict) -> str | None:
@@ -152,7 +152,7 @@ def summary(run_id):
 
     print()
     print(c.dim(f"For full trace of any failure: "
-                f"tool-pouch show {run_id[:8]} --filter <type>"))
+                f"pouch show {run_id[:8]} --filter <type>"))
 
 
 def _pick_headline(failures):

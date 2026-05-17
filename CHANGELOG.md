@@ -13,33 +13,36 @@ import-path or environment-variable back-compat.
 
 ### Capabilities
 
-- Pre-deploy stress testing — `tool-pouch scan`, `tool-pouch run`,
-  adapters for OpenAI and Anthropic tool calling, MCP support, and
+- Installed as `pip install tool-pouch`. Imported as
+  `import tool_pouch as pouch`. The CLI is invoked as `pouch` (the long
+  form `tool-pouch` is registered as an alias).
+- Pre-deploy stress testing — `pouch scan`, `pouch run`,
+  adapters for Anthropic and OpenAI tool calling, MCP support, and
   fix-prompt output.
-- Production capture — `tool_pouch.wrap_openai(client)` and
-  `tool_pouch.wrap_anthropic(client)` intercept every
-  `chat.completions.create` / `messages.create` call with
+- Production capture — `pouch.wrap_anthropic(client)` and
+  `pouch.wrap_openai(client)` intercept every
+  `messages.create` / `chat.completions.create` call with
   sub-millisecond enqueue overhead. Sync, async, and streaming clients
   are supported; tool-call deltas are reassembled before commit.
 - Background writer thread — serialization, redaction, truncation, and
   destination IO all run off the request path. Daemon thread, fail-open
   per destination, multi-process safe via `os.register_at_fork`.
-- Three destinations: `tool_pouch.LocalStore` (SQLite at
-  `~/.tool_pouch/tool_pouch.db`), `tool_pouch.JSONLogger` (NDJSON to a
-  stream), `tool_pouch.HTTPSink` (batched POST). All conform to a
+- Three destinations: `pouch.LocalStore` (SQLite at
+  `~/.tool_pouch/tool_pouch.db`), `pouch.JSONLogger` (NDJSON to a
+  stream), `pouch.HTTPSink` (batched POST). All conform to a
   single `Destination` Protocol.
 - Per-trace size limits with structured truncation markers.
-- `tool_pouch.redact.builtin()` PII redactor — emails, phones, SSNs,
-  credit cards, IPv4/IPv6, OpenAI/Anthropic keys, AWS keys, GitHub
+- `pouch.redact.builtin()` PII redactor — emails, phones, SSNs,
+  credit cards, IPv4/IPv6, Anthropic/OpenAI keys, AWS keys, GitHub
   tokens, generic bearer tokens. Extensible via `extra_patterns=`.
   Custom callables are supported as `redact=` directly.
-- `tool_pouch.flush(timeout)` public API to drain in-flight traces
+- `pouch.flush(timeout)` public API to drain in-flight traces
   before process exit. Also wired to `atexit`.
-- Replay — `tool-pouch replay <id>` re-runs any captured trace under
+- Replay — `pouch replay <id>` re-runs any captured trace under
   `--frozen` / `--frozen-tools` (with `--strict | --loose-tools |
   --match-closest`) / chaos (default). Use `--repeat N` for aggregated
   failure-rate reporting.
-- CLI: `tool-pouch traces`, `tool-pouch trace <id>`, `tool-pouch sync`
+- CLI: `pouch traces`, `pouch trace <id>`, `pouch sync`
   (cloud-sync stub).
 - Versioned migration system at `tool_pouch/migrations/` with a
   `schema_version` table. Idempotent re-runs.

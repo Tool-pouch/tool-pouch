@@ -1,9 +1,9 @@
-"""OpenAI / Anthropic client wrappers for production trace capture.
+"""Anthropic / OpenAI client wrappers for production trace capture.
 
-Public API:
+Public API (assuming `import tool_pouch as pouch`):
 
-    tool_pouch.wrap_openai(client, agent_name="...", ...)
-    tool_pouch.wrap_anthropic(client, agent_name="...", ...)
+    pouch.wrap_anthropic(client, agent_name="...", ...)
+    pouch.wrap_openai(client, agent_name="...", ...)
 
 The wrappers monkey-patch `chat.completions.create` (OpenAI) and
 `messages.create` (Anthropic) on the supplied client, leaving every

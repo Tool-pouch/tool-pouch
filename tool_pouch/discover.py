@@ -1,4 +1,4 @@
-"""Walk a path (file or directory) and collect @tool_pouch.tool callables.
+"""Walk a path (file or directory) and collect @pouch.tool callables.
 
 Convention over configuration:
 - Single file: import it, return its tools.
@@ -23,7 +23,7 @@ _SKIP_DIRS = {"__pycache__", ".venv", "venv", "node_modules", ".git",
 
 
 def discover(path: Union[str, Path]) -> List[Callable[..., Any]]:
-    """Return all @tool_pouch.tool callables found at `path`."""
+    """Return all @pouch.tool callables found at `path`."""
     p = Path(path).expanduser().resolve()
 
     if not p.exists():
