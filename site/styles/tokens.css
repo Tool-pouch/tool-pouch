@@ -1,0 +1,116 @@
+/* Tool Pouch design tokens — warm parchment + cool purple brand.
+ *
+ * The neutrals are Tailwind's "stone" scale (warm grays) for an
+ * Anthropic-inspired parchment feel. The brand is a single cool
+ * purple (hue 290) at two stops: a soft lavender for the logo mark
+ * and a deeper purple for CTAs, links, and accents.
+ *
+ * The warm/cool contrast (parchment neutrals + cool purple brand)
+ * is the distinctive move — like a purple silk lining inside a
+ * leather tool pouch.
+ */
+
+:root {
+  /* Brand — cool purple, hue 290 */
+  --brand-50:  oklch(98% 0.02 290);
+  --brand-100: oklch(95% 0.05 290);
+  --brand-200: oklch(90% 0.08 290);
+  --brand-300: oklch(78% 0.11 290);
+  --brand-400: oklch(68% 0.16 290);
+  --brand-500: oklch(60% 0.19 290);
+  --brand-600: oklch(54% 0.20 290);
+  --brand-700: oklch(45% 0.20 290);
+  --brand-800: oklch(32% 0.16 290);
+  --brand-900: oklch(22% 0.10 290);
+
+  /* Neutral — warm stone */
+  --neutral-0:   #fffefb;
+  --neutral-50:  #faf8f5;
+  --neutral-100: #f5f4f0;
+  --neutral-200: #e7e5e0;
+  --neutral-300: #d6d3cc;
+  --neutral-400: #a8a29e;
+  --neutral-500: #78716c;
+  --neutral-600: #57534e;
+  --neutral-700: #44403c;
+  --neutral-800: #292524;
+  --neutral-900: #1c1917;
+  --neutral-950: #0c0a09;
+
+  /* Semantic */
+  --color-bg:           var(--neutral-50);
+  --color-bg-raised:    var(--neutral-0);
+  --color-fg:           var(--neutral-900);
+  --color-fg-muted:     var(--neutral-600);
+  --color-fg-subtle:    var(--neutral-500);
+  --color-border:       var(--neutral-200);
+  --color-border-strong:var(--neutral-300);
+  --color-accent:       var(--brand-600);
+  --color-accent-soft:  var(--brand-100);
+  --color-accent-fg:    var(--neutral-0);
+  --brand-mark:         var(--color-accent-soft);
+  --brand-mark-fg:      var(--color-accent);
+  --color-success:      oklch(60% 0.16 145);
+  --color-danger:       oklch(60% 0.20 28);
+
+  /* Type */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+               monospace;
+
+  --fs-xs:   0.75rem;
+  --fs-sm:   0.875rem;
+  --fs-base: 1rem;
+  --fs-md:   1.125rem;
+  --fs-lg:   1.25rem;
+  --fs-xl:   1.5rem;
+  --fs-2xl:  2rem;
+  --fs-3xl:  2.75rem;
+  --fs-4xl:  3.5rem;
+
+  --lh-tight:  1.2;
+  --lh-normal: 1.55;
+  --lh-loose:  1.8;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Spacing — 4px scale */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+  --sp-24: 6rem;
+
+  /* Radii */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 18px;
+
+  /* Shadows — gentle, warm-tinted */
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-md: 0 4px 12px rgba(28, 25, 23, 0.06);
+  --shadow-lg: 0 12px 32px rgba(28, 25, 23, 0.08);
+  --shadow-brand: 0 6px 20px oklch(54% 0.20 290 / 0.20);
+
+  /* Layout */
+  --container-max: 72rem;
+  --content-max:   42rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-norm: 200ms;
+  --dur-slow: 320ms;
+}

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tool-pouch"
+version = "0.1.0"
+description = "Stress-test agents. Capture production. Replay incidents on demand."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{ name = "Jack Yonke", email = "jackyonke@gmail.com" }]
+keywords = ["ai", "agent", "testing", "llm", "mcp", "tool-calling"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "anthropic>=0.40.0",
+    "tomli>=2.0; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+# `ollama` is the same dependency as `openai` (Ollama exposes an
+# OpenAI-compatible HTTP API), but kept as a separate extra so users
+# can pip-install with the verb that matches their intent.
+openai = ["openai>=1.0.0"]
+ollama = ["openai>=1.0.0"]
+dev = [
+    "openai>=1.0.0",
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.urls]
+Homepage = "https://toolpouch.dev"
+Source = "https://github.com/tool-pouch/tool-pouch"
+Issues = "https://github.com/tool-pouch/tool-pouch/issues"
+
+[project.scripts]
+tool-pouch = "tool_pouch.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tool_pouch"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
