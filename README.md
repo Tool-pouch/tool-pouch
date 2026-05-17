@@ -4,7 +4,7 @@
 
 Tool Pouch is the reliability layer for AI agents. It catches silent failures
 pre-deploy with `tool-pouch scan`, captures every production request with
-`tool_pouch.wrap_openai`, and replays any captured trace under chaos so you
+`tool_pouch.wrap_anthropic`, and replays any captured trace under chaos so you
 can answer **"would this incident reproduce?"** in one command — before
 you ship a fix.
 
@@ -14,10 +14,10 @@ pip install tool-pouch
 
 ```python
 import tool_pouch
-from openai import OpenAI
+from anthropic import Anthropic
 
-# Wrap once. Every chat.completions.create from here on is captured.
-client = tool_pouch.wrap_openai(OpenAI())
+# Wrap once. Every messages.create from here on is captured.
+client = tool_pouch.wrap_anthropic(Anthropic())
 ```
 
 ```bash
@@ -39,7 +39,7 @@ Three problems, one toolkit:
 | Layer | Command | What it answers |
 |---|---|---|
 | **Pre-deploy** | `tool-pouch scan` | "What does my agent do when its tools break?" |
-| **Production** | `tool_pouch.wrap_openai` | "What did my agent actually receive and emit?" |
+| **Production** | `tool_pouch.wrap_anthropic` | "What did my agent actually receive and emit?" |
 | **Incident response** | `tool-pouch replay` | "Would this 3am incident reproduce?" |
 
 You can adopt any one independently. They share the same data model
@@ -99,9 +99,9 @@ matches your existing setup.
 | Use this if... | Path | Jump to |
 |---|---|---|
 | Tools are plain `.py` functions you control | **A. Decorator** | [`@tool_pouch.tool` + `tool-pouch scan`](#path-a--decorator-the-simplest) |
-| You already use OpenAI / Anthropic tool calling | **B. Adapter** | [`test_openai` / `test_anthropic`](#path-b--openai--anthropic-adapter) |
+| You already use Anthropic / OpenAI tool calling | **B. Adapter** | [`test_anthropic` / `test_openai`](#path-b--anthropic--openai-adapter) |
 | LangGraph, MCP, or your own loop | **C. Custom orchestration** | [`agent_fn` + `tool-pouch run`](#path-c--custom-orchestration) |
-| You want production capture + replay | **D. wrap()** | [`wrap_openai` / `wrap_anthropic`](#path-d--production-wrap--replay) |
+| You want production capture + replay | **D. wrap()** | [`wrap_anthropic` / `wrap_openai`](#path-d--production-wrap--replay) |
 
 What success looks like in any of them: see [What the output looks like](#what-the-output-looks-like).
 
@@ -143,38 +143,38 @@ the full battery (12 scenarios × N inputs).
 
 ---
 
-## Path B — OpenAI / Anthropic adapter
+## Path B — Anthropic / OpenAI adapter
 
-> ~5 min. Use this when you already have a working agent on OpenAI or
-> Anthropic tool calling.
+> ~5 min. Use this when you already have a working agent on Anthropic or
+> OpenAI tool calling.
 
 Schemas are derived from each function's signature and docstring — no
 separate spec file, no rewrite.
 
 ```python
 import tool_pouch
-from openai import OpenAI
+from anthropic import Anthropic
 
 def search(q: str) -> dict:
     """Search the web for q."""
     return {"results": [...]}
 
-tool_pouch.test_openai(
-    client=OpenAI(),
-    model="gpt-4o",
+tool_pouch.test_anthropic(
+    client=Anthropic(),
+    model="claude-opus-4-7",
     tools=[search],
     test_inputs=["best pizza in NYC"],
 )
 ```
 
-Anthropic is identical:
+OpenAI is identical:
 
 ```python
-from anthropic import Anthropic
+from openai import OpenAI
 
-tool_pouch.test_anthropic(
-    client=Anthropic(),
-    model="claude-opus-4-7",
+tool_pouch.test_openai(
+    client=OpenAI(),
+    model="gpt-4o",
     tools=[search],
     test_inputs=["best pizza in NYC"],
 )
@@ -227,19 +227,19 @@ One line wraps your client:
 
 ```python
 import tool_pouch
-from openai import OpenAI
+from anthropic import Anthropic
 
-client = tool_pouch.wrap_openai(OpenAI(), agent_name="support_bot")
-# That's it. Use client.chat.completions.create exactly as before.
+client = tool_pouch.wrap_anthropic(Anthropic(), agent_name="support_bot")
+# That's it. Use client.messages.create exactly as before.
 ```
 
-Anthropic is identical:
+OpenAI is identical:
 
 ```python
-client = tool_pouch.wrap_anthropic(Anthropic(), agent_name="support_bot")
+client = tool_pouch.wrap_openai(OpenAI(), agent_name="support_bot")
 ```
 
-Async clients work too (`AsyncOpenAI`, `AsyncAnthropic`). Streaming is
+Async clients work too (`AsyncAnthropic`, `AsyncOpenAI`). Streaming is
 fully supported — chunks pass through unchanged, and the trace is
 committed when the stream exhausts.
 
@@ -256,9 +256,9 @@ tool-pouch trace <trace_id>                  # full detail of one capture
 extracts it from the request kwargs:
 
 ```python
-client = tool_pouch.wrap_openai(
-    OpenAI(),
-    request_id=lambda **kw: kw.get("user", "anon"),
+client = tool_pouch.wrap_anthropic(
+    Anthropic(),
+    request_id=lambda **kw: kw.get("metadata", {}).get("user_id", "anon"),
 )
 ```
 
@@ -291,14 +291,14 @@ The default redactor scrubs emails, phones, SSNs, credit cards, IPs,
 and common API keys at capture time:
 
 ```python
-client = tool_pouch.wrap_openai(OpenAI())   # built-in redaction enabled
+client = tool_pouch.wrap_anthropic(Anthropic())   # built-in redaction enabled
 ```
 
 Extend the regex pack:
 
 ```python
-client = tool_pouch.wrap_openai(
-    OpenAI(),
+client = tool_pouch.wrap_anthropic(
+    Anthropic(),
     redact=tool_pouch.redact.builtin(extra_patterns=[
         r"acct_\d{6}",
         r"customer_token=[A-Za-z0-9]+",
@@ -309,7 +309,7 @@ client = tool_pouch.wrap_openai(
 Disable redaction explicitly (if you're handling PII upstream):
 
 ```python
-client = tool_pouch.wrap_openai(OpenAI(), redact=None)
+client = tool_pouch.wrap_anthropic(Anthropic(), redact=None)
 ```
 
 ### Destinations
@@ -318,8 +318,8 @@ Three destinations ship in OSS. Combine them — capture once, pipe
 anywhere:
 
 ```python
-client = tool_pouch.wrap_openai(
-    OpenAI(),
+client = tool_pouch.wrap_anthropic(
+    Anthropic(),
     destinations=[
         tool_pouch.LocalStore(),                       # SQLite, dev/staging
         tool_pouch.JSONLogger(),                       # NDJSON to stderr
@@ -339,7 +339,7 @@ ships. The wrap API stays unchanged.
 
 ### Disabling capture
 
-Set `TOOL_POUCH_DISABLE_WRAP=1` and every `wrap_openai` / `wrap_anthropic`
+Set `TOOL_POUCH_DISABLE_WRAP=1` and every `wrap_anthropic` / `wrap_openai`
 call becomes a no-op passthrough. Useful in CI and unit tests.
 
 ### What the wrap costs you
@@ -435,7 +435,7 @@ User-facing surface:
 
 Wrap / replay:
 
-- `wrap/proxy.py` — `wrap_openai` / `wrap_anthropic` client interception
+- `wrap/proxy.py` — `wrap_anthropic` / `wrap_openai` client interception
 - `wrap/writer.py` — background writer thread, fail-open, fork-safe
 - `wrap/destinations.py` — `LocalStore`, `JSONLogger`, `HTTPSink`
 - `wrap/limits.py` — per-trace + per-tool-result size truncation

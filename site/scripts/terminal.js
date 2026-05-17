@@ -1,7 +1,7 @@
 /* Lightweight terminal animation for the hero. No deps. ~50 lines.
  *
  * Cycles through three frames showing the canonical Tool Pouch flow:
- *   1. wrap_openai capture
+ *   1. wrap_anthropic capture
  *   2. tool-pouch traces
  *   3. tool-pouch replay --repeat 100
  *
@@ -17,7 +17,7 @@
     [
       { c: "prompt", t: "$ " },
       { c: "",       t: "python app.py\n" },
-      { c: "out",    t: "[tool-pouch] capturing every chat.completions.create → ~/.tool_pouch/tool_pouch.db\n" },
+      { c: "out",    t: "[tool-pouch] capturing every messages.create → ~/.tool_pouch/tool_pouch.db\n" },
       { c: "out",    t: "Listening on :8000\n" },
     ],
     [
