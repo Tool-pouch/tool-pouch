@@ -39,8 +39,8 @@ dev = [
 
 [project.urls]
 Homepage = "https://toolpouch.dev"
-Source = "https://github.com/tool-pouch/tool-pouch"
-Issues = "https://github.com/tool-pouch/tool-pouch/issues"
+Source = "https://github.com/Tool-pouch/tool-pouch"
+Issues = "https://github.com/Tool-pouch/tool-pouch/issues"
 
 [project.scripts]
 tool-pouch = "tool_pouch.cli:main"
