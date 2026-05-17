@@ -500,7 +500,6 @@ tool-pouch replay abc12345 --repeat 100</code></pre>
       <a href="https://github.com/Tool-pouch/tool-pouch">github</a>
       · <a href="https://github.com/Tool-pouch/tool-pouch/issues">issues</a>
       · <a href="https://pypi.org/project/tool-pouch/">pypi</a>
-      · <a href="mailto:hello@toolpouch.dev">contact</a>
     </span>
   </div>
 </footer>
@@ -551,9 +550,9 @@ tool-pouch replay abc12345 --repeat 100</code></pre>
         showMsg('You\u2019re on the list! We\u2019ll email you at launch.', 'ok');
         form.reset();
       } else if (res.status === 409) {
-        showMsg('You\u2019re already signed up \u2014 we\u2019ll be in touch.', 'ok');
+        showMsg('You\u2019re already signed up. We\u2019ll be in touch.', 'ok');
       } else {
-        showMsg('Something went wrong. Try again or email hello@toolpouch.dev.', 'err');
+        showMsg('Something went wrong. Try again or open an issue on GitHub.', 'err');
       }
     }).catch(function () {
       showMsg('Network error. Check your connection and try again.', 'err');
