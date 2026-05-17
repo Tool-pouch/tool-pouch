@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tool-pouch"
-version = "0.1.0"
+version = "0.1.1"
 description = "Stress-test agents. Capture production. Replay incidents on demand."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
-authors = [{ name = "Jack Yonke", email = "jackyonke@gmail.com" }]
+authors = [{ name = "Jack Yonke", email = "contact@toolpouch.dev" }]
 keywords = ["ai", "agent", "testing", "llm", "mcp", "tool-calling"]
 classifiers = [
     "Development Status :: 4 - Beta",
